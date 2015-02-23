@@ -31,13 +31,18 @@ class CorrectRotate(Snuffling):
         tmin, tmax = self.get_selected_time_range(fallback=True)
         for traces in p.chopper_grouped(tmin=tmin, tmax=tmax, gather=key):            
             if not traces:
-                break
+                continue
             
+            # rotate all stations except d05
+            if self.d05_included(traces):
+                continue
+           
             if self.want_pre_rotate(traces):
                 az = -1 * allaz[traces[0].station]
                 rotated = trace.rotate(traces,az,('E', 'N'),('EX', 'NY'))
                 print 'using pre-rotated traces\n%s %s ' % tuple(rotated)
                 rot_from = ('NY', 'EX')
+                rot_to =('NN', 'EN')
             else:
                 rotated = [tr.copy() for tr in traces if tr.channel[-1] in '34']
                 for tr in rotated:
@@ -45,18 +50,21 @@ class CorrectRotate(Snuffling):
                 
                 print 'using UN-pre-rotated traces\n%s %s ' % tuple(rotated)
                 rot_from = ('HH4', 'HH3')
+                rot_to =('N', 'E')
             
              
             az = allaz[traces[0].station]
-            rot_to =('NN', 'EN') 
+             
             n_new,e_new = trace.rotate(rotated, az, rot_from, rot_to)
-
             n_new.set_codes(station=traces[0].station)
             e_new.set_codes(station=traces[0].station)
             self.add_traces([n_new,e_new])
 
     def want_pre_rotate(self, tr_group):
         return any(map(lambda x: x.channel[0] in 'EN', tr_group))
+    
+    def d05_included(self,tr_group):
+        return any(map(lambda x: x.station[-1] in '5', tr_group))
     
 def __snufflings__():
     return [ CorrectRotate() ]
