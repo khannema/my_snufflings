@@ -25,24 +25,6 @@ class CorrectRotate(Snuffling):
 
         p = self.get_pile()
 
-	    #event, stations = self.get_active_event_and_stations()	
-
-	    #if not event:
-	    #	self.fail('No event selected.')	
-	    
-	    #if not stations:
-            #    self.fail('No station information available.')
-	    
-
-	    #allstats = {}
-	    #for station in stations:
-	    #    if station.station not in allstats:
-	    #	allstats[station.station] = station
-
-        #tmin = calendar.timegm( time.gmtime(p.tmin)[:4] + ( 0, 0 ) )
-	    
-	    
-	    
         key = lambda tr: (tr.network, tr.station) 	
         
         #for traces in self.chopper_selected_traces(trace_selector=key, fallback=True):            
