@@ -1,14 +1,15 @@
-import calendar, time
-import numpy as num
-from pyrocko import trace, pile, io, util
-from pyrocko.snuffling import Snuffling, Param
-from pyrocko import orthodrome
-import math, string
+from pyrocko import trace
+from pyrocko.snuffling import Snuffling
+import string
 
 class CorrectRotate(Snuffling):
-
+    """
+    Rotates traces with azimiuth given for each station.
+    In case of already rotated traces (N,E already exist), it assumes
+    that traces were rotated in the wrong way.
+    """
     def setup(self):
-        self.set_name('Re-rotated traces')
+        self.set_name('Re-rotate traces')
         self.set_live_update(False)        
 
     def call(self):
@@ -27,7 +28,6 @@ class CorrectRotate(Snuffling):
 
         key = lambda tr: (tr.network, tr.station) 	
         
-        #for traces in self.chopper_selected_traces(trace_selector=key, fallback=True):            
         tmin, tmax = self.get_selected_time_range(fallback=True)
         for traces in p.chopper_grouped(tmin=tmin, tmax=tmax, gather=key):            
             if not traces:
@@ -60,6 +60,3 @@ class CorrectRotate(Snuffling):
     
 def __snufflings__():
     return [ CorrectRotate() ]
-
-
-
