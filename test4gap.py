@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Feb 17 20:04:57 2015
-
-@author: katrin
-"""
-
 from pyrocko import util
 from pyrocko.snuffling import Snuffling
 
