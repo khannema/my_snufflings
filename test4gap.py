@@ -1,14 +1,10 @@
 from pyrocko import util
 from pyrocko.snuffling import Snuffling
 
-#import numpy as num
-
-# open file to write time gaps
-
-# when pile.make_pile() is called without any arguments, the command line
-# parameters given to the script are searched for waveform files and directories
 class Test4Gap(Snuffling):
-    
+    """
+    Searches for time gaps in data stream and writes them to a file
+    """    
     def setup(self):
         self.set_name('List Gaps')
         self.set_live_update(False)
@@ -21,8 +17,7 @@ class Test4Gap(Snuffling):
         
         p = self.get_pile()
 
-        # get timestamp for full hour before first data sample in all selected traces
-        #tmin = calendar.timegm( time.gmtime(p.tmin)[:4] + ( 0, 0 ) )
+        # for test whether there is a gap or not        
         tpad = 10
 
 
@@ -31,7 +26,8 @@ class Test4Gap(Snuffling):
         gaps = {}
         cnt = 0
          
-
+        # call chopper with load_data=False in order to speed up things,
+        # loads just metadata of traces
         for traces in p.chopper(load_data=False,trace_selector=key):
             if traces:
                 for tr in traces:
@@ -48,16 +44,11 @@ class Test4Gap(Snuffling):
                         print "trace {} done".format(cnt)
 
             channels = all_ranges.keys()
-      
-    
+          
             for i in range(len(channels)):
-                #gaps.append([])
                 if channels[i] not in all_ranges:
                     pass                    
-                    #line = 'no time information for component {} of station {}\n'.format(channels[i][1],channels[i][0])
-                    #out.write(line)
                 else:
-                    #print type(all_ranges[k])
                     time_list = all_ranges[channels[i]]
                     time_list = sorted(time_list)
                     for j in range(1,len(time_list)):
@@ -72,16 +63,14 @@ class Test4Gap(Snuffling):
             for i in range(len(channels)):
                 if channels[i] not in gaps:
                     pass                    
-                    #line = 'component {} of station {} has no gap\n'.format(channels[i][1],channels[i][0])
-                    #out.write(line)
                 else:
                     gap_list = gaps[channels[i]]
-                    #print gap_list
                     for j in range(len(gap_list)):
                         line = '{} {} {} {}\n'.format(channels[i][0],channels[i][1],util.time_to_str(gap_list[j][0]),util.time_to_str(gap_list[j][1]))
                         out.write(line)
         
         out.close
-#        
+
+        
 def __snufflings__():
     return [ Test4Gap() ]
