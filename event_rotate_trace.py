@@ -21,24 +21,15 @@ class RotateTraceAzimuth(Snuffling):
         for station in stations:
             if station.station not in allstats:
                 allstats[station.station] = station
-                print station.station
+                #print station.station
                 
         key = lambda tr: (tr.network, tr.station) 
         
         p = self.get_pile()
         
-        tmin, tmax = self.get_selected_time_range(fallback=True)
-        print tmin,tmax
-        print p
-        for tr in p.iter_all():
-            print tr
-        for traces in p.chopper_grouped(tmin=tmin,
-                                        tmax=tmax,
-                                        gather=key,
-                                        want_incomplete=True,
-                                        maxgap=1000.): 
-            #print 'sdfsdf'
-            #print traces            
+        # doesn't work with tmin and tmax???
+        for traces in p.chopper_grouped(gather=key): 
+                       
             if not traces:
                 continue
             
@@ -76,7 +67,7 @@ class RotateTraceAzimuth(Snuffling):
             
             flag = 0
             for k in k_comp:
-                if k == 'NN' or k =='EN':
+                if k == 'NN' or k == 'EN':
                     flag = 1		
             
             for k in k_stat:
